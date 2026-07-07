@@ -94,13 +94,24 @@ nav.scrolled{background:rgba(5,10,20,0.92);backdrop-filter:blur(20px);border-bot
 .ring:nth-child(3){inset:-30px;border-left-color:var(--accent3);animation-duration:30s}
 .profile-img{
   width:260px;height:260px;border-radius:50%;
-  background:transparent;
+  background:linear-gradient(135deg,var(--bg-card),var(--bg-card2));
   border:2px solid rgba(79,142,247,0.3);
   display:flex;align-items:center;justify-content:center;
   overflow:hidden;position:relative;z-index:1;
-  font-family:'Syne',sans-serif;font-size:5rem;font-weight:800;color:var(--accent1);
+  box-shadow:0 0 40px rgba(79,142,247,0.35);
 }
-.profile-img img{width:100%;height:100%;object-fit:cover;object-position:center top;border-radius:50%;display:block}
+.profile-img img{width:100%;height:100%;object-fit:cover;object-position:center top;border-radius:50%;display:block;position:relative;z-index:2}
+.profile-fallback{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,var(--bg-card),var(--bg-card2));color:var(--accent1);z-index:1}
+.profile-fallback i{font-size:5rem;opacity:0.68}
+.profile-img.fallback-only .profile-fallback{z-index:3}
+.profile-signature{
+  position:absolute;right:-0.55rem;bottom:-1.35rem;z-index:5;
+  padding:0.5rem 0.95rem;border-radius:999px;
+  background:linear-gradient(135deg,var(--accent1),var(--accent2));
+  color:#fff;font-family:'Syne',sans-serif;font-size:0.9rem;font-weight:800;
+  letter-spacing:0.08em;border:1px solid rgba(255,255,255,0.18);
+  box-shadow:0 10px 24px rgba(79,142,247,0.3);
+}
 .floating-tags{position:absolute;inset:-60px;pointer-events:none}
 .tag{position:absolute;background:var(--bg-card);border:1px solid var(--border);border-radius:8px;padding:0.5rem 0.75rem;font-size:0.75rem;font-weight:600;display:flex;align-items:center;gap:0.4rem;white-space:nowrap;animation:float 4s ease-in-out infinite;backdrop-filter:blur(10px)}
 .tag-1{top:5%;left:-5%;animation-delay:0s}
@@ -314,6 +325,7 @@ footer{background:var(--bg-card);border-top:1px solid var(--border);padding:3rem
   .profile-img{width:200px;height:200px}
   .profile-rings{width:240px;height:240px}
   .profile-name-animated{font-size:1.3rem}
+  .profile-signature{right:0;bottom:-1.1rem;font-size:0.78rem;padding:0.42rem 0.8rem}
 }
 </style>
 </head>
@@ -357,13 +369,14 @@ footer{background:var(--bg-card);border-top:1px solid var(--border);padding:3rem
   <canvas class="particles-canvas" id="particles"></canvas>
   <div class="hero-content container">
     <div class="hero-text">
+      <div class="hero-badge"><span></span>Stage PFA en cours — Bank Al-Maghrib · Juillet–Août 2026</div>
       <h1>Douae<br><span>Chaibi</span></h1>
       <div class="typing-container">
         <span class="typing-text" id="typing"></span>
         <span class="cursor"></span>
       </div>
       <p class="hero-desc">
-        Étudiante ingénieure en 2ème année cycle ingénieur à l'ENSA Fès, spécialisée en Sciences des Données et Intelligence Artificielle. Passionnée par l'extraction de valeur à partir de la donnée — du pipeline ETL aux modèles de deep learning.
+        Étudiante ingénieure en 2ème année du cycle ingénieur à l’ENSA Fès, spécialisée en Sciences des Données et Intelligence Artificielle. Je m’intéresse particulièrement aux LLM, à l’IA médicale, au traitement d’images et à la conception de solutions data fiables et sécurisées.
       </p>
       <div class="hero-btns">
         <a href="cv_CHAIBI_DOUAE.pdf" download class="btn-primary">
@@ -386,9 +399,11 @@ footer{background:var(--bg-card);border-top:1px solid var(--border);padding:3rem
             <div class="ring"></div>
             <div class="ring"></div>
           </div>
-          <div class="profile-img">
-            <img src="me.jpeg" alt="Douae Chaibi" onerror="this.style.display='none';this.parentElement.innerHTML='DC'">
+          <div class="profile-img" id="profilePhoto">
+            <span class="profile-fallback" aria-hidden="true"><i class="fas fa-user"></i></span>
+            <img id="profileImage" src="me.png" alt="Portrait de Douae Chaibi" onerror="tryProfileImage(this)">
           </div>
+          <div class="profile-signature">DC</div>
           <div class="floating-tags">
             <div class="tag tag-1"><i class="fas fa-brain"></i> Deep Learning</div>
             <div class="tag tag-2"><i class="fas fa-database"></i> Big Data</div>
@@ -414,12 +429,12 @@ footer{background:var(--bg-card);border-top:1px solid var(--border);padding:3rem
     <div class="about-grid">
       <div class="about-text reveal">
         <p>Je suis <strong>étudiante ingénieure en 2ème année de cycle ingénieur</strong> à l'ENSA Fès, spécialisée en Sciences des Données et Intelligence Artificielle. Mon parcours couvre l'ensemble du cycle de vie de la donnée : collecte, modélisation, analyse et visualisation.</p>
-        <p>Avec des bases solides en <strong>Machine Learning, Deep Learning</strong> et <strong>Business Intelligence</strong>, j'ai eu l'opportunité d'appliquer ces connaissances en milieu professionnel au <strong>CHU Hassan II de Fès</strong>, où j'ai contribué au développement d'une solution IA pour un environnement hospitalier.</p>
-        <p>Rigoureuse et curieuse, j'aime concevoir des solutions data qui créent de la valeur concrète. Je cherche continuellement à approfondir mes connaissances à travers des projets ambitieux et des expériences concrètes.</p>
+        <p>Mes expériences au <strong>CHU Hassan II de Fès</strong> et à la <strong>Faculté de Médecine et de Pharmacie de Fès — Unité Bio-informatique / CARE</strong> m’ont permis d’appliquer l’intelligence artificielle à des problématiques médicales, notamment la classification d’images et l’exploration des Whole Slide Images en anatomopathologie.</p>
+        <p>Je réalise actuellement mon <strong>stage PFA à Bank Al-Maghrib, de juillet à août 2026</strong>, autour du sujet : <strong>« Conception et implémentation d’une stratégie de tests pour les modèles LLM couvrant la performance et la sécurité »</strong>. Rigoureuse, curieuse et orientée impact, je souhaite concevoir des solutions data et IA fiables, utiles et adaptées aux contraintes réelles des organisations.</p>
         <div class="stats-grid">
-          <div class="stat-card"><span class="stat-num" data-target="7">0</span><span class="stat-label">Projets réalisés</span></div>
+          <div class="stat-card"><span class="stat-num" data-target="9">0</span><span class="stat-label">Projets réalisés</span></div>
           <div class="stat-card"><span class="stat-num" data-target="6">0</span><span class="stat-label">Certifications</span></div>
-          <div class="stat-card"><span class="stat-num" data-target="15">0</span><span class="stat-label">Technologies explorées</span></div>
+          <div class="stat-card"><span class="stat-num" data-target="20">0</span><span class="stat-label">Technologies explorées</span></div>
           <div class="stat-card"><span class="stat-num" data-target="4">0</span><span class="stat-label">Années de formation</span></div>
         </div>
       </div>
@@ -496,6 +511,11 @@ footer{background:var(--bg-card);border-top:1px solid var(--border);padding:3rem
           <div class="skill-tag st-purple"><i class="fas fa-eye"></i> Computer Vision</div>
           <div class="skill-tag st-purple"><i class="fas fa-image"></i> OpenCV</div>
           <div class="skill-tag st-purple"><i class="fas fa-chart-line"></i> Matplotlib / Seaborn</div>
+          <div class="skill-tag st-purple"><i class="fas fa-microscope"></i> WSI / Histopathologie</div>
+          <div class="skill-tag st-purple"><i class="fas fa-layer-group"></i> OpenSlide / Tuilage</div>
+          <div class="skill-tag st-purple"><i class="fas fa-language"></i> Large Language Models</div>
+          <div class="skill-tag st-purple"><i class="fas fa-vial"></i> Tests & Évaluation LLM</div>
+          <div class="skill-tag st-purple"><i class="fas fa-shield-alt"></i> Sécurité de l’IA</div>
         </div>
       </div>
 
@@ -551,17 +571,46 @@ footer{background:var(--bg-card);border-top:1px solid var(--border);padding:3rem
         <div class="t-card">
           <div class="t-header">
             <div>
-              <div class="t-title">Ingénieure Stagiaire — Développement IA</div>
+              <div class="t-title">Stagiaire PFA — Tests & Évaluation de modèles LLM</div>
+              <div class="t-org"><i class="fas fa-building-columns" style="margin-right:0.4rem"></i>Bank Al-Maghrib</div>
+            </div>
+            <div class="t-date"><i class="fas fa-calendar" style="margin-right:0.4rem"></i>Juillet – Août 2026 · En cours</div>
+          </div>
+          <p class="t-desc"><strong>Sujet :</strong> « Conception et implémentation d’une stratégie de tests pour les modèles LLM couvrant la performance et la sécurité ». Élaboration de scénarios et de critères d’évaluation afin d’analyser la qualité, la robustesse, la performance et les risques de sécurité des modèles de langage dans un environnement institutionnel exigeant.</p>
+          <div class="t-tags">
+            <span class="t-tag">LLM</span><span class="t-tag">Stratégie de tests</span><span class="t-tag">Performance</span><span class="t-tag">Sécurité</span><span class="t-tag">Évaluation</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="timeline-item reveal">
+        <div class="t-card">
+          <div class="t-header">
+            <div>
+              <div class="t-title">Stagiaire — Intelligence Artificielle Médicale & WSI</div>
+              <div class="t-org"><i class="fas fa-microscope" style="margin-right:0.4rem"></i>Faculté de Médecine et de Pharmacie de Fès — Unité Bio-informatique / CARE</div>
+            </div>
+            <div class="t-date"><i class="fas fa-calendar" style="margin-right:0.4rem"></i>Juin 2026</div>
+          </div>
+          <p class="t-desc"><strong>Projet :</strong> « Plateforme pédagogique intelligente pour l’exploration des Whole Slide Images (WSI) en anatomopathologie avec intégration de l’Intelligence Artificielle ». Conception d’une plateforme favorisant la visualisation, l’annotation et l’apprentissage à partir de lames histopathologiques numériques. Ce stage m’a permis d’approfondir mes connaissances en IA médicale, traitement d’images histopathologiques et développement de plateformes pédagogiques intelligentes.</p>
+          <div class="t-tags">
+            <span class="t-tag">IA Médicale</span><span class="t-tag">Whole Slide Images</span><span class="t-tag">Anatomopathologie</span><span class="t-tag">OpenSlide</span><span class="t-tag">Computer Vision</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="timeline-item reveal">
+        <div class="t-card">
+          <div class="t-header">
+            <div>
+              <div class="t-title">Stagiaire — Développement IA</div>
               <div class="t-org"><i class="fas fa-hospital" style="margin-right:0.4rem"></i>CHU Hassan II, Fès</div>
             </div>
             <div class="t-date"><i class="fas fa-calendar" style="margin-right:0.4rem"></i>Juillet 2025</div>
           </div>
-          <p class="t-desc">Développement et intégration d'une solution d'intelligence artificielle en environnement hospitalier. Collaboration avec des équipes techniques et médicales pour comprendre les besoins métier et concevoir une solution adaptée aux contraintes du secteur de la santé.</p>
+          <p class="t-desc">Développement et intégration d’une solution d’intelligence artificielle en environnement hospitalier. Collaboration avec des équipes techniques et médicales afin de comprendre les besoins métier et de concevoir une solution adaptée aux contraintes du secteur de la santé.</p>
           <div class="t-tags">
-            <span class="t-tag">IA Médicale</span>
-            <span class="t-tag">Python</span>
-            <span class="t-tag">Sécurité des données</span>
-            <span class="t-tag">Collaboration pluridisciplinaire</span>
+            <span class="t-tag">IA Médicale</span><span class="t-tag">Python</span><span class="t-tag">Sécurité des données</span><span class="t-tag">Collaboration pluridisciplinaire</span>
           </div>
         </div>
       </div>
@@ -666,6 +715,7 @@ footer{background:var(--bg-card);border-top:1px solid var(--border);padding:3rem
       <button class="filter-btn" data-filter="dl">Deep Learning</button>
       <button class="filter-btn" data-filter="web">Développement Web</button>
       <button class="filter-btn" data-filter="data">Data Engineering</button>
+      <button class="filter-btn" data-filter="medical">IA médicale</button>
     </div>
     <div class="projects-grid">
 
@@ -691,7 +741,7 @@ footer{background:var(--bg-card);border-top:1px solid var(--border);padding:3rem
           <div class="project-title">Projet BI Complet — ETL, Modélisation & Visualisation</div>
           <p class="project-desc">Pipeline end-to-end avec ETL Talend, Data Warehouse SQL Server en schéma étoile. Dashboards Power BI intégrant analyses temporelles, géographiques et KPIs métier via mesures DAX.</p>
           <div class="project-tech"><span class="tech-badge">Talend</span><span class="tech-badge">SQL Server</span><span class="tech-badge">Power BI</span><span class="tech-badge">DAX</span></div>
-          <div class="project-links"><a href="#" class="proj-link proj-link-primary"><i class="fab fa-github"></i> GitHub</a><a href="#" class="proj-link proj-link-secondary"><i class="fas fa-eye"></i> Démo</a></div>
+          <div class="project-links"><a href="#" class="proj-link proj-link-secondary"><i class="fas fa-eye"></i> Démo</a></div>
         </div>
       </div>
 
@@ -715,7 +765,7 @@ footer{background:var(--bg-card);border-top:1px solid var(--border);padding:3rem
           <div class="project-title">Détection de Tumeurs Cérébrales par Deep Learning</div>
           <p class="project-desc">Classification d'IRM cérébrales par CNN TensorFlow. Détection et classification automatique des tumeurs, déployé via une interface web Flask/Django pour les professionnels de santé.</p>
           <div class="project-tech"><span class="tech-badge">Python</span><span class="tech-badge">TensorFlow</span><span class="tech-badge">OpenCV</span><span class="tech-badge">Flask</span><span class="tech-badge">Django</span></div>
-          <div class="project-links"><a href="#" class="proj-link proj-link-primary"><i class="fab fa-github"></i> GitHub</a><a href="#" class="proj-link proj-link-secondary"><i class="fas fa-eye"></i> Démo</a></div>
+          <div class="project-links"><a href="#" class="proj-link proj-link-secondary"><i class="fas fa-eye"></i> Démo</a></div>
         </div>
       </div>
 
@@ -740,7 +790,7 @@ footer{background:var(--bg-card);border-top:1px solid var(--border);padding:3rem
           <div class="project-title">Plateforme Data Preprocessing (Django)</div>
           <p class="project-desc">Application web pour le prétraitement automatisé de données. Pipeline interactif de nettoyage, transformation et normalisation de datasets, accessible sans code.</p>
           <div class="project-tech"><span class="tech-badge">Python</span><span class="tech-badge">Django</span><span class="tech-badge">Pandas</span><span class="tech-badge">NumPy</span><span class="tech-badge">Scikit-learn</span></div>
-          <div class="project-links"><a href="#" class="proj-link proj-link-primary"><i class="fab fa-github"></i> GitHub</a><a href="#" class="proj-link proj-link-secondary"><i class="fas fa-eye"></i> Démo</a></div>
+          <div class="project-links"><a href="#" class="proj-link proj-link-secondary"><i class="fas fa-eye"></i> Démo</a></div>
         </div>
       </div>
 
@@ -776,7 +826,7 @@ footer{background:var(--bg-card);border-top:1px solid var(--border);padding:3rem
           <p class="project-desc">Système de détection de visages générés par IA via MobileNetV2 (transfer learning), entraîné sur RVF10k (~10 000 images). Application Flask avec prédiction en temps réel et score de confiance.</p>
           <div style="margin-bottom:0.75rem"><div class="accuracy-badge"><i class="fas fa-bullseye"></i> Accuracy : 87%</div></div>
           <div class="project-tech"><span class="tech-badge">TensorFlow/Keras</span><span class="tech-badge">MobileNetV2</span><span class="tech-badge">Flask</span><span class="tech-badge">OpenCV</span></div>
-          <div class="project-links"><a href="#" class="proj-link proj-link-primary"><i class="fab fa-github"></i> GitHub</a><a href="#" class="proj-link proj-link-secondary"><i class="fas fa-eye"></i> Démo</a></div>
+          <div class="project-links"><a href="#" class="proj-link proj-link-secondary"><i class="fas fa-eye"></i> Démo</a></div>
         </div>
       </div>
 
@@ -802,7 +852,7 @@ footer{background:var(--bg-card);border-top:1px solid var(--border);padding:3rem
           <div class="project-title">Solution BI Ferroviaire — SNCF 2021–2025</div>
           <p class="project-desc">Solution BI complète pour la SNCF : ETL Talend, Data Warehouse en schéma étoile (FACT_RESERVATION + 5 dimensions), cube OLAP SSAS et dashboards Power BI avec KPIs DAX (taux de remplissage, croissance CA mensuelle).</p>
           <div class="project-tech"><span class="tech-badge">SQL Server</span><span class="tech-badge">Talend</span><span class="tech-badge">SSAS</span><span class="tech-badge">Power BI</span><span class="tech-badge">DAX</span></div>
-          <div class="project-links"><a href="#" class="proj-link proj-link-primary"><i class="fab fa-github"></i> GitHub</a><a href="#" class="proj-link proj-link-secondary"><i class="fas fa-eye"></i> Démo</a></div>
+          <div class="project-links"><a href="#" class="proj-link proj-link-secondary"><i class="fas fa-eye"></i> Démo</a></div>
         </div>
       </div>
 
@@ -831,7 +881,7 @@ footer{background:var(--bg-card);border-top:1px solid var(--border);padding:3rem
           <div class="project-title">Analyse Tennis ATP avec GraphX & GraphFrames</div>
           <p class="project-desc">Modélisation des tournois ATP (2015 & 2020–2022) sous forme de graphes orientés avec Apache Spark. Classement des joueurs et application de l'algorithme PageRank pour mesurer leur influence dans les grands tournois.</p>
           <div class="project-tech"><span class="tech-badge">Apache Spark</span><span class="tech-badge">GraphX</span><span class="tech-badge">GraphFrames</span><span class="tech-badge">Scala</span><span class="tech-badge">PageRank</span></div>
-          <div class="project-links"><a href="#" class="proj-link proj-link-primary"><i class="fab fa-github"></i> GitHub</a><a href="#" class="proj-link proj-link-secondary"><i class="fas fa-eye"></i> Démo</a></div>
+          <div class="project-links"><a href="#" class="proj-link proj-link-secondary"><i class="fas fa-eye"></i> Démo</a></div>
         </div>
       </div>
 
@@ -855,7 +905,7 @@ footer{background:var(--bg-card);border-top:1px solid var(--border);padding:3rem
           <div class="project-title">Estimation du Prix Airbnb avec Spark MLlib</div>
           <p class="project-desc">Prédiction du prix optimal d'un logement Airbnb via un pipeline Spark MLlib en Scala. EDA, nettoyage, encodage, modèle Random Forest avec validation croisée. Évaluation RMSE.</p>
           <div class="project-tech"><span class="tech-badge">Spark MLlib</span><span class="tech-badge">Scala</span><span class="tech-badge">Random Forest</span><span class="tech-badge">Cross Validation</span></div>
-          <div class="project-links"><a href="#" class="proj-link proj-link-primary"><i class="fab fa-github"></i> GitHub</a><a href="#" class="proj-link proj-link-secondary"><i class="fas fa-eye"></i> Démo</a></div>
+          <div class="project-links"><a href="#" class="proj-link proj-link-secondary"><i class="fas fa-eye"></i> Démo</a></div>
         </div>
       </div>
 
@@ -881,7 +931,31 @@ footer{background:var(--bg-card);border-top:1px solid var(--border);padding:3rem
           <div class="project-title">DApp de Vote Électronique — Blockchain & SMA</div>
           <p class="project-desc">Application de vote électronique sécurisée combinant Blockchain Ethereum (smart contracts Solidity) et Systèmes Multi-Agents. Enregistrement immuable des votes, protection contre le double vote et interface Streamlit.</p>
           <div class="project-tech"><span class="tech-badge">Python</span><span class="tech-badge">Solidity</span><span class="tech-badge">Ethereum</span><span class="tech-badge">Web3.py</span><span class="tech-badge">Streamlit</span></div>
-          <div class="project-links"><a href="#" class="proj-link proj-link-primary"><i class="fab fa-github"></i> GitHub</a><a href="#" class="proj-link proj-link-secondary"><i class="fas fa-eye"></i> Démo</a></div>
+          <div class="project-links"><a href="#" class="proj-link proj-link-secondary"><i class="fas fa-eye"></i> Démo</a></div>
+        </div>
+      </div>
+
+
+      <!-- P9: Plateforme WSI -->
+      <div class="project-card reveal" data-cats="dl web medical">
+        <div class="project-thumb">
+          <i class="fas fa-microscope project-thumb-icon"></i>
+          <div class="project-thumb-visual">
+            <div class="proj-vis">
+              <div style="position:relative;width:120px;height:72px;margin-bottom:8px;border:1px solid var(--border);border-radius:8px;overflow:hidden;background:linear-gradient(135deg,rgba(139,92,246,.18),rgba(239,68,68,.12))">
+                <div style="position:absolute;width:32px;height:25px;border-radius:50%;background:rgba(139,92,246,.55);left:12px;top:12px"></div>
+                <div style="position:absolute;width:42px;height:30px;border-radius:45%;background:rgba(239,68,68,.35);right:10px;bottom:8px"></div>
+                <div style="position:absolute;inset:8px;border:1px dashed rgba(6,214,160,.65);border-radius:5px"></div>
+              </div>
+              <div class="proj-vis-title">WSI — Anatomopathologie</div>
+            </div>
+          </div>
+        </div>
+        <div class="project-body">
+          <div class="project-cats"><span class="project-cat">IA Médicale</span><span class="project-cat">Computer Vision</span><span class="project-cat">Plateforme pédagogique</span></div>
+          <div class="project-title">Plateforme intelligente d’exploration des WSI</div>
+          <p class="project-desc">Conception d’une plateforme pédagogique pour explorer des Whole Slide Images en anatomopathologie, visualiser des lames numériques, annoter des régions d’intérêt et préparer l’intégration de modèles d’intelligence artificielle pour l’analyse médicale.</p>
+          <div class="project-tech"><span class="tech-badge">Python</span><span class="tech-badge">OpenSlide</span><span class="tech-badge">WSI</span><span class="tech-badge">Deep Zoom</span><span class="tech-badge">IA Médicale</span></div>
         </div>
       </div>
 
@@ -970,7 +1044,7 @@ footer{background:var(--bg-card);border-top:1px solid var(--border);padding:3rem
             <div class="form-group"><label class="form-label" for="fname">Nom</label><input type="text" id="fname" class="form-input" placeholder="Votre nom" required></div>
             <div class="form-group"><label class="form-label" for="femail">Email</label><input type="email" id="femail" class="form-input" placeholder="votre@email.com" required></div>
           </div>
-          <div class="form-group"><label class="form-label" for="fsubject">Objet</label><input type="text" id="fsubject" class="form-input" placeholder="Collaboration, projet..."></div>
+          <div class="form-group"><label class="form-label" for="fsubject">Objet</label><input type="text" id="fsubject" class="form-input" placeholder="Stage PFA, collaboration, projet..."></div>
           <div class="form-group"><label class="form-label" for="fmsg">Message</label><textarea id="fmsg" class="form-textarea" placeholder="Décrivez votre projet ou votre demande..." required></textarea></div>
           <button type="submit" class="btn-send" id="sendBtn"><i class="fas fa-paper-plane"></i> Envoyer le message</button>
           <div id="formSuccess" style="display:none;margin-top:1rem;padding:1rem;background:rgba(6,214,160,0.1);border:1px solid rgba(6,214,160,0.3);border-radius:10px;color:var(--accent3);font-weight:600;text-align:center"><i class="fas fa-check-circle"></i> Message envoyé !</div>
@@ -1015,8 +1089,21 @@ document.getElementById('themeToggle').addEventListener('click',()=>{
 // Mobile menu
 function closeMobile(){document.getElementById('mobileMenu').classList.remove('open')}
 document.getElementById('menuToggle').addEventListener('click',()=>document.getElementById('mobileMenu').classList.toggle('open'));
+// Profile image fallback: tries common filenames before showing an icon
+const profileSources=['me.png','me.jpeg','me.jpg','profile.png','profile.jpeg','profile.jpg'];
+let profileSourceIndex=0;
+function tryProfileImage(img){
+  profileSourceIndex++;
+  if(profileSourceIndex<profileSources.length){
+    img.src=profileSources[profileSourceIndex];
+  }else{
+    img.style.display='none';
+    const wrapper=document.getElementById('profilePhoto');
+    if(wrapper) wrapper.classList.add('fallback-only');
+  }
+}
 // Typing
-const words=['Étudiante Ingénieure','Data Scientist','ML Enthusiast','BI Developer','Deep Learning Learner'];
+const words=['Étudiante Ingénieure','Data Scientist','LLM Evaluation','IA Médicale','Machine Learning Engineer','BI Developer'];
 let wIdx=0,cIdx=0,typing=true;
 function typeEffect(){
   const el=document.getElementById('typing');if(!el)return;
